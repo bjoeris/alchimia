@@ -103,8 +103,8 @@ class TwistedResultProxy(object):
     def fetchone(self):
         return self._engine._defer_to_thread(self._result_proxy.fetchone)
 
-    def fetchmany(self):
-        return self._engine._defer_to_thread(self._result_proxy.fetchmany)
+    def fetchmany(self,size=None):
+        return self._engine._defer_to_thread(self._result_proxy.fetchmany,size)
 
     def fetchall(self):
         return self._engine._defer_to_thread(self._result_proxy.fetchall)
