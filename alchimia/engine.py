@@ -76,6 +76,12 @@ class TwistedConnection(object):
         d.addCallback(TwistedTransaction, self._engine)
         return d
 
+    def begin_twophase(self,xid=None):
+        d = self._engine._defer_to_thread(
+            self._connection.begin_twophase, xid)
+        d.addCallback(TwistedTwoPhaseTransaction, self._engine)
+        return d
+
     def in_transaction(self):
         return self._connection.in_transaction()
 
@@ -93,6 +99,14 @@ class TwistedTransaction(object):
 
     def close(self):
         return self._engine._defer_to_thread(self._transaction.close)
+
+
+class TwistedTwoPhaseTransaction(TwistedTransaction):
+    def __init__(self, transaction, engine):
+        super(TwistedTwoPhaseTransaction, self).__init__(transaction, engine)
+
+    def prepare():
+        return self._engine._defer_to_thread(self._transaction.prepare)
 
 
 class TwistedResultProxy(object):
